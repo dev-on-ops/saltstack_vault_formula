@@ -1,6 +1,7 @@
 # Vault Salt State
 
 Intent of this state is to provide options for automated deployment of hashicorp vault on linux platforms. It maybe extended to windows at a later date and time. Options in this context means you can choose to include up to different stages of automation depending on security requirements. See notes below on stages available:
+Maybe adjusted at a later date to account for overal environments rather then single clusters.
 
 # Stages
 0. init.sls: includes all needed states in order to complete installation of needed pillar is configured on host state is applied to
