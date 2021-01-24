@@ -1,0 +1,52 @@
+{%- set vault = salt['pillar.get']('vault') -%}
+{%- if vault.config.ui is defined -%}
+ui = {{ vault.config.ui }}
+{% endif %}
+{% if vault.config.seal.type == "shamir" -%}
+# Seal type is shamir no stanza required
+{% elif vault.config.seal.type == "transit" -%}
+seal "transit" {
+  address            = {{ vault.config.seal.address }}
+  token              = {{ vault.config.seal.token }}
+  key_name           = "transit_key_name"
+  mount_path         = "transit/"
+  {%- if vault.config.seal.disable_renewal is defined %}
+  disable_renewal    = {{ vault.config.seal.address }}
+  {% endif %}
+  {%- if vault.config.seal.namespace is defined -%}
+  namespace          = {{ vault.config.seal.namespace }}
+  {% endif %}
+  {%- if vault.config.seal.tls_ca_cert is defined -%}
+  tls_ca_cert        = {{ vault.config.seal.tls_ca_cert }}
+  {% endif %}
+  {%- if vault.config.seal.tls_client_cert is defined -%}
+  tls_client_cert    = {{ vault.config.seal.tls_client_cert }}
+  {% endif %}
+  {%- if vault.config.seal.tls_client_key is defined -%}
+  tls_client_key     = {{ vault.config.seal.tls_client_key }}
+  {% endif %}
+  {%- if vault.config.seal.tls_server_name is defined -%}
+  tls_server_name    = {{ vault.config.seal.tls_server_name }}
+  {% endif %}
+  {%- if vault.config.seal.tls_skip_verify is defined -%}
+  tls_skip_verify    = {{ vault.config.seal.tls_skip_verify }}
+  {% endif %}
+}
+{% elif vault.config.seal.type == "aws_kms" -%}
+seal "awskms" {
+  kms_key_id         = {{ vault.config.seal.kms_key_id }}
+  access_key         = {{ vault.config.seal.access_key }}
+  secret_key         = {{ vault.config.seal.secret_key }}
+  {% if vault.config.seal.region is defined -%}
+  region             = {{ vault.config.seal.region }}
+  {% endif %}
+  {%- if vault.config.seal.session_token is defined -%}
+  session_token      = {{ vault.config.seal.session_token }}
+  {% endif %}
+  {%- if vault.config.seal.endpoint is defined -%}
+  endpoint           = {{ vault.config.seal.endpoint }}
+  {% endif %}
+}
+{% endif %}
+api_addr = https://{{ grains.fqdn }}:8200
+cluster_addr = https://{{ grains.fqdn }}:8201
