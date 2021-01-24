@@ -1,1 +1,2 @@
-saltstack/salt/files/*
+saltstack/salt/files/vault/*
+!saltstack/salt/files/vault/placeholder
